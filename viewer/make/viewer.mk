@@ -76,8 +76,9 @@ ifeq ($(os),linux)
     libOpts += -L../fx/build/linux-$(colladaVersion)$(debugSuffix)
     libOpts += -lcollada$(colladaVersionNoDots)fx$(debugSuffix)
 
-    libOpts += -L../rt/external-libs/bullet/lib/$(os)
-    libOpts += -lbulletopenglsupport -lbulletdynamics -lbulletcollision -lbulletmath
+#    libOpts += -L../rt/external-libs/bullet/lib/$(os)
+#    libOpts += -lbulletopenglsupport -lbulletdynamics -lbulletcollision -lbulletmath
+    libOpts += -lBulletDynamics -lBulletCollision -lLinearMath
 
     libOpts += -I/usr/include/GL -I/usr/include/Cg
     libOpts += -lGL -lGLU -lglut -lCg -lCgGL
