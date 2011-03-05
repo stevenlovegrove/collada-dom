@@ -182,7 +182,9 @@ private:
 
 	// Animation Controls 
 	CrtBool 		AnimationOn; 
-	CrtBool			AnimationPaused; 
+	CrtBool			AnimationPaused;
+
+	CrtBool			FlipNormals;
 
 	//TODO: we should remove these, since we should't read anything and that is references
 	CrtBool	ReadMaterialLibrary( domLibrary_materialsRef lib ); 
@@ -284,6 +286,8 @@ public:
 		m_collada = 0;
 
 		m_physics = 0;
+
+		FlipNormals = CrtFalse;
 	}
 
 
@@ -436,6 +440,7 @@ public:
 	inline CrtVoid	SetAnimationOn( CrtBool on ){ AnimationOn = on; }
 	inline CrtVoid	SetAnimationPaused( CrtBool paused ){ AnimationPaused = paused; } 
 	inline CrtBool	IsAnimationPaused(){ return AnimationPaused; } 
+	inline CrtVoid  SetFlipNormals(CrtBool on){ FlipNormals = on; }
 
 //	CrtNode * GetNode( CrtChar * nodeName ); 
 //	CrtNode * GetNode( CrtInt nodeIdx ); 
