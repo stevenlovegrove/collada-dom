@@ -728,7 +728,7 @@ CrtInt GrowVertexData(CrtGeometry * geometry, CrtUInt size)
 	return 0;
 }
 
-CrtInt SetVertexData(CrtOffsets& offset, CrtGeometry * geometry, domListOfUInts &values, CrtUInt i)
+CrtInt SetVertexData(CrtOffsets& offset, CrtGeometry * geometry, domListOfUInts &values, CrtUInt i, CrtBool flipnormals)
 {
 	domUint index;
 	index = values[i*offset.max_offset + offset.position_offset];
@@ -738,12 +738,14 @@ CrtInt SetVertexData(CrtOffsets& offset, CrtGeometry * geometry, domListOfUInts 
 	geometry->Points[geometry->vertexcount].y = (CrtFloat) (*offset.position_floats)[(size_t)index*3+1];
 	geometry->Points[geometry->vertexcount].z = (CrtFloat) (*offset.position_floats)[(size_t)index*3+2];
 
+	const CrtFloat scale = flipnormals ? -1.0f : 1.0f;
+
 	if (offset.normal_offset != -1)
 	{
 		index = values[i*offset.max_offset + offset.normal_offset];
-		geometry->Normals[geometry->vertexcount].x = (CrtFloat) (*offset.normal_floats)[(size_t)index*3+0];
-		geometry->Normals[geometry->vertexcount].y = (CrtFloat) (*offset.normal_floats)[(size_t)index*3+1];
-		geometry->Normals[geometry->vertexcount].z = (CrtFloat) (*offset.normal_floats)[(size_t)index*3+2];
+		geometry->Normals[geometry->vertexcount].x = scale * (CrtFloat) (*offset.normal_floats)[(size_t)index*3+0];
+		geometry->Normals[geometry->vertexcount].y = scale * (CrtFloat) (*offset.normal_floats)[(size_t)index*3+1];
+		geometry->Normals[geometry->vertexcount].z = scale * (CrtFloat) (*offset.normal_floats)[(size_t)index*3+2];
 	}
 
 	if (offset.texture1_offset != -1)
@@ -775,7 +777,7 @@ CrtLines * CrtScene::BuildLines(domLines * dom_lines, CrtGeometry * geometry)
 	lines->indexes = CrtNewData(CrtUInt, lines->count * 2);
 	for (CrtUInt ivertex=0; ivertex< lines->count * 2; ivertex++)
 	{
-		lines->indexes[ivertex] = SetVertexData(offsets, geometry, P, ivertex);
+		lines->indexes[ivertex] = SetVertexData(offsets, geometry, P, ivertex, FlipNormals);
 //		lines->indexes[ivertex] = (CrtUInt) P[ivertex*maxoffset ];
 	}
 
@@ -803,7 +805,7 @@ CrtLinestrips * CrtScene::BuildLineStrips(domLinestrips * dom_linestrips, CrtGeo
 
 		for (CrtUInt j=0; j< vcount ; j++)
 		{
-			strips[j] = SetVertexData(offsets, geometry, P[i]->getValue(), j);
+			strips[j] = SetVertexData(offsets, geometry, P[i]->getValue(), j, FlipNormals);
 //			strips[j] = (CrtUInt) P[i]->getValue()[j*maxoffset];
 		}
 		linestrips->countvector.push_back( vcount );
@@ -837,7 +839,7 @@ CrtTriStrips * CrtScene::BuildTriStrips(domTristrips * dom_tristrips, CrtGeometr
 
 		for (CrtUInt j=0; j< vcount ; j++)
 		{
-			strips[j] = SetVertexData(offsets, geometry, P[i]->getValue(), j);
+			strips[j] = SetVertexData(offsets, geometry, P[i]->getValue(), j, FlipNormals);
 //			strips[j] = (CrtUInt) P[i]->getValue()[j*maxoffset];
 		}
 		tristrips->countvector.push_back( vcount );
@@ -871,7 +873,7 @@ CrtTriFans * CrtScene::BuildTriFans(domTrifans * dom_trifans, CrtGeometry * geom
 
 		for (CrtUInt j=0; j< vcount ; j++)
 		{
-			strips[j] = SetVertexData(offsets, geometry, P[i]->getValue(), j);
+			strips[j] = SetVertexData(offsets, geometry, P[i]->getValue(), j, FlipNormals);
 //			strips[j] = (CrtUInt) P[i]->getValue()[j*maxoffset];
 		}
 		trifans->countvector.push_back( vcount );
@@ -904,7 +906,7 @@ CrtPolygons * CrtScene::BuildPolygons(domPolylist * dom_polylist, CrtGeometry * 
 
 		for (CrtUInt j=0; j< vcount ; j++)
 		{
-			vertices[j] = SetVertexData(offsets, geometry, P->getValue(), vertex_start_index+j);
+			vertices[j] = SetVertexData(offsets, geometry, P->getValue(), vertex_start_index+j, FlipNormals);
 //			vertices[j] = (CrtUInt) P->getValue()[(j+vertex_start_index)*maxoffset];
 		}
 		polygons->countvector.push_back( vcount );
@@ -944,7 +946,7 @@ CrtPolygons * CrtScene::BuildPolygons(domPolygons * dom_polygons, CrtGeometry * 
 		CrtUInt * vertices = CrtNewData(CrtUInt, vcount );
 		for (CrtUInt j=0; j< vcount ; j++)
 		{
-			vertices[j] = SetVertexData(offsets, geometry, P[i]->getValue(), j);
+			vertices[j] = SetVertexData(offsets, geometry, P[i]->getValue(), j, FlipNormals);
 //			vertices[j] = (CrtUInt) P[i]->getValue()[j*maxoffset];
 		}
 		polygons->countvector.push_back( vcount );
@@ -975,7 +977,7 @@ CrtTriangles * CrtScene::BuildTriangles(domTriangles * dom_triangles, CrtGeometr
 	triangles->indexes = CrtNewData(CrtUInt, triangles->count * 3);
 	for (CrtUInt ivertex=0; ivertex< triangles->count * 3; ivertex++)
 	{
-		triangles->indexes[ivertex] = SetVertexData(offsets, geometry, P, ivertex);
+		triangles->indexes[ivertex] = SetVertexData(offsets, geometry, P, ivertex, FlipNormals);
 //		triangles->indexes[ivertex] = (CrtUInt) P[ivertex*maxoffset ];
 	}
 
