@@ -100,7 +100,7 @@ CrtVoid CrtRender::UnLoad()
 		UsePhysics		= CrtTrue;
 	}
 }
-CrtScene * CrtRender::Load( const CrtChar * fileName, const CrtChar * basePath, CrtBool flipNormals )
+CrtScene * CrtRender::Load( const CrtChar * fileName, const CrtChar * basePath, CrtBool flipNormals, CrtFloat modelScale )
 {
 	UnLoad();
 
@@ -110,6 +110,9 @@ CrtScene * CrtRender::Load( const CrtChar * fileName, const CrtChar * basePath, 
 	scene->SetName( fileName ); 
 	scene->SetDocURI( fileName ); //TODO: what should we set the URI of this scene to?
 	scene->SetFlipNormals(flipNormals);
+	scene->SetModelScale(modelScale);
+
+
 
 	// set the base path if there is one 
 	if ( basePath )

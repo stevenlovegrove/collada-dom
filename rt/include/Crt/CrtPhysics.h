@@ -52,7 +52,7 @@ struct ConstraintInput;
 class ColladaConverter
 {
 
-protected:
+public:
 
 	class DAE* m_collada;
 	class domCOLLADA* m_dom;

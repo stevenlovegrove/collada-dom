@@ -138,7 +138,7 @@ public:
 	CrtBool	InitWindow();
 	CrtBool	InitRenderSettings();
 	
-	CrtScene * Load( const CrtChar * fileName, const CrtChar * pathName = NULL, CrtBool flipNormals = CrtFalse);
+	CrtScene * Load( const CrtChar * fileName, const CrtChar * pathName = NULL, CrtBool flipNormals = CrtFalse, CrtFloat modelScale=1);
 	CrtVoid UnLoad();
 
 	CrtVoid	Destroy();

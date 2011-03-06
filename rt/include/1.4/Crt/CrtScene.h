@@ -185,6 +185,7 @@ private:
 	CrtBool			AnimationPaused;
 
 	CrtBool			FlipNormals;
+	CrtFloat	  ModelScale;
 
 	//TODO: we should remove these, since we should't read anything and that is references
 	CrtBool	ReadMaterialLibrary( domLibrary_materialsRef lib ); 
@@ -441,6 +442,8 @@ public:
 	inline CrtVoid	SetAnimationPaused( CrtBool paused ){ AnimationPaused = paused; } 
 	inline CrtBool	IsAnimationPaused(){ return AnimationPaused; } 
 	inline CrtVoid  SetFlipNormals(CrtBool on){ FlipNormals = on; }
+	inline CrtVoid  SetModelScale(CrtFloat scale){ ModelScale = scale; }
+
 
 //	CrtNode * GetNode( CrtChar * nodeName ); 
 //	CrtNode * GetNode( CrtInt nodeIdx ); 
