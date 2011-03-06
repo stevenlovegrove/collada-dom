@@ -16,7 +16,7 @@ includeOpts += -I../dom/include/$(colladaVersion)
 includeOpts += -I../fx/include/
 includeOpts += -Iinclude
 includeOpts += -Iinclude/1.4
-includeOpts += -Iexternal-libs/bullet/include
+includeOpts += -I/usr/local/include/bullet
 
 ifneq ($(findstring $(os),linux mac),)
     ccFlags += -fPIC -DLINUX

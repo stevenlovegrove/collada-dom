@@ -1,10 +1,10 @@
 all:
-	make os=linux project=minizip -C dom
-	make os=linux project=dom -C dom
-	make os=linux project=domTest -C dom
-	make os=linux project=fx -C fx
-	make os=linux project=rt -C rt
-	make os=linux project=viewer -C viewer
+	make -j16 os=linux project=minizip -C dom
+	make -j16 os=linux project=dom -C dom
+	make -j16 os=linux project=domTest -C dom
+	make -j16 os=linux project=fx -C fx
+	make -j16 os=linux project=rt -C rt
+	make -j16 os=linux project=viewer -C viewer
 	
 clean:
 	make os=linux project=minizip -C dom clean

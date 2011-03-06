@@ -57,7 +57,8 @@ ifeq ($(os),linux)
     includeOpts += -I../dom/include/$(colladaVersion)
     includeOpts += -I../fx/include/
     includeOpts += -I../rt/include
-    includeOpts += -I../rt/external-libs/bullet/include -I../
+#    includeOpts += -I../rt/external-libs/bullet/include -I../
+    includeOpts += -I/usr/local/include/bullet
 
     ccFlags += -DCFX_PLATFORM_INCLUDE=\"cfxLinux.h\"
     ccFlags += -DCRT_PLATFORM_INCLUDE=\"CrtLinux.h\"

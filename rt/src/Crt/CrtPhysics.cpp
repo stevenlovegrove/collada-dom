@@ -4,7 +4,7 @@
 * Licensed under the MIT Open Source License, for details please see license.txt or the website
 * http://www.opensource.org/licenses/mit-license.php
 *
-*/ 
+*/
 #ifndef NO_BULLET
 
 #include "dae.h"
@@ -56,7 +56,7 @@ bool  ColladaConverter::SetColladaDOM(DAE* dae, const char * filename)
 {
 	m_collada = dae;
 	m_dom = m_collada->getDom(filename);
-	return m_dom != NULL; 
+	return m_dom != NULL;
 };
 
 char* getLastFileName();
@@ -102,7 +102,7 @@ btTransform	GetbtTransformFromCOLLADA_DOM(domMatrix_Array& matrixArray,
 {
 	btTransform	startTransform;
 	startTransform.setIdentity();
-	
+
 	unsigned int i;
 	//either load the matrix (worldspace) or incrementally build the transform from 'translate'/'rotate'
 	for (i=0;i<matrixArray.getCount();i++)
@@ -149,7 +149,7 @@ m_filename(0)
 	m_numObjects = 0;
 	m_unitMeterScaling = 1.0f;
 
-	//clear 
+	//clear
 	{
 
 		for (int i=0;i<COLLADA_CONVERTER_MAX_NUM_OBJECTS;i++)
@@ -158,7 +158,7 @@ m_filename(0)
 		}
 	}
 }
-	
+
 ColladaConverter::~ColladaConverter()
 {
 }
@@ -167,7 +167,7 @@ bool	ColladaConverter::load(const char* orgfilename)
 {
 
 	const char* filename = fixFileName(orgfilename);
-	
+
 	int res = m_collada->load(filename);//,docBuffer);
 
 	if (res != DAE_OK)
@@ -183,7 +183,7 @@ bool	ColladaConverter::load(const char* orgfilename)
 			return false;
 		}
 	}
-	
+
 	if (res == DAE_OK)
 	{
 
@@ -192,7 +192,7 @@ bool	ColladaConverter::load(const char* orgfilename)
 		{
 			printf("COLLADA File loaded to the m_dom, but query for the m_dom assets failed \n" );
 			printf("COLLADA Load Aborted! \n" );
-			delete m_collada;	
+			delete m_collada;
 			return false;
 		}
 	}
@@ -215,7 +215,7 @@ bool ColladaConverter::convert()
 				domAsset::domUnitRef unit = m_dom->getAsset()->getUnit();
 				domFloat meter = unit->getMeter();
 				printf("asset unit meter=%f\n",meter);
-//				m_unitMeterScaling = meter;		
+//				m_unitMeterScaling = meter;
 
 			}
 			if ( m_dom->getAsset() && m_dom->getAsset()->getUp_axis() )
@@ -224,27 +224,27 @@ bool ColladaConverter::convert()
 				switch( up->getValue() )
 				{
 				case UPAXISTYPE_X_UP:
-					printf("	X is Up Data and Hiearchies must be converted!\n" ); 
-					printf("  Conversion to X axis Up isn't currently supported!\n" ); 
-					printf("  COLLADA_RT defaulting to Y Up \n" ); 
+					printf("	X is Up Data and Hiearchies must be converted!\n" );
+					printf("  Conversion to X axis Up isn't currently supported!\n" );
+					printf("  COLLADA_RT defaulting to Y Up \n" );
 					setGravity(CrtVec3f(-10,0,0));
 					setCameraInfo(btVector3(1,0,0),1);
-					break; 
+					break;
 				case UPAXISTYPE_Y_UP:
-					printf("	Y Axis is Up for this file \n" ); 
-					printf("  COLLADA_RT set to Y Up \n" ); 
+					printf("	Y Axis is Up for this file \n" );
+					printf("  COLLADA_RT set to Y Up \n" );
 					setGravity(CrtVec3f(0,-10,0));
 					setCameraInfo(btVector3(0,1,0),0);
 
 					break;
 				case UPAXISTYPE_Z_UP:
-					printf("	Z Axis is Up for this file \n" ); 
-					printf("  All Geometry and Hiearchies must be converted!\n" ); 
+					printf("	Z Axis is Up for this file \n" );
+					printf("  All Geometry and Hiearchies must be converted!\n" );
 					setGravity(CrtVec3f(0,0,-10));
-					break; 
+					break;
 				default:
 
-					break; 
+					break;
 				}
 			}
 
@@ -278,19 +278,19 @@ bool ColladaConverter::convert()
 				printf(" CrtScene::Reading Geometry Library \n" );
 				for ( unsigned int  i = 0; i < libgeom->getGeometry_array().getCount(); i++)
 				{
-					//ReadGeometry(  ); 
+					//ReadGeometry(  );
 					domGeometryRef lib = libgeom->getGeometry_array()[i];
 
 					domMesh			*meshElement		= lib->getMesh();
 					if (meshElement)
 					{
-						// Find out how many groups we need to allocate space for 
+						// Find out how many groups we need to allocate space for
 						int	numTriangleGroups = (int)meshElement->getTriangles_array().getCount();
 						int	numPolygonGroups  = (int)meshElement->getPolygons_array().getCount();
 						int	totalGroups		  = numTriangleGroups + numPolygonGroups;
-						if (totalGroups == 0) 
+						if (totalGroups == 0)
 						{
-							printf("No Triangles or Polygons found int Geometry %s \n", lib->getId() ); 
+							printf("No Triangles or Polygons found int Geometry %s \n", lib->getId() );
 						} else
 						{
 							//printf("Found mesh geometry (%s): numTriangleGroups:%i numPolygonGroups:%i\n",lib->getId(),numTriangleGroups,numPolygonGroups);
@@ -302,14 +302,14 @@ bool ColladaConverter::convert()
 					if (convexMeshElement)
 					{
 						printf("found convexmesh element\n");
-						// Find out how many groups we need to allocate space for 
+						// Find out how many groups we need to allocate space for
 						int	numTriangleGroups = (int)convexMeshElement->getTriangles_array().getCount();
 						int	numPolygonGroups  = (int)convexMeshElement->getPolygons_array().getCount();
 
 						int	totalGroups		  = numTriangleGroups + numPolygonGroups;
-						if (totalGroups == 0) 
+						if (totalGroups == 0)
 						{
-							printf("No Triangles or Polygons found in ConvexMesh Geometry %s \n", lib->getId() ); 
+							printf("No Triangles or Polygons found in ConvexMesh Geometry %s \n", lib->getId() );
 						}else
 						{
 							printf("Found convexmesh geometry: numTriangleGroups:%i numPolygonGroups:%i\n",numTriangleGroups,numPolygonGroups);
@@ -339,7 +339,7 @@ bool ColladaConverter::convert()
 							setGravity(CrtVec3f((float)grav.get(0),(float)grav.get(1),(float)grav.get(2)));
 						}
 
-					} 
+					}
 
 					for (unsigned int ps=0;ps<physicsSceneRef->getInstance_physics_model_array().getCount();ps++)
 					{
@@ -347,7 +347,7 @@ bool ColladaConverter::convert()
 
 						daeElementRef ref = instance_physicsModelRef->getUrl().getElement();
 
-						domPhysics_modelRef model = *(domPhysics_modelRef*)&ref; 
+						domPhysics_modelRef model = *(domPhysics_modelRef*)&ref;
 
 
 						unsigned int p,r;
@@ -356,8 +356,8 @@ bool ColladaConverter::convert()
 							domInstance_physics_modelRef	instancePhysicsModelRef = model->getInstance_physics_model_array()[p];
 
 							daeElementRef ref = instancePhysicsModelRef->getUrl().getElement();
-	
-							domPhysics_modelRef model = *(domPhysics_modelRef*)&ref; 
+
+							domPhysics_modelRef model = *(domPhysics_modelRef*)&ref;
 
 							//todo: group some shared functionality in following 2 'blocks'.
 							for (r=0;r<instancePhysicsModelRef->getInstance_rigid_body_array().getCount();r++)
@@ -438,7 +438,7 @@ bool ColladaConverter::convert()
 
 							domInstance_rigid_bodyRef instRigidbodyRef = instance_physicsModelRef->getInstance_rigid_body_array()[r];
 
-							
+
 
 							btScalar mass = 1.f;
 							bool isDynamics = true;
@@ -507,10 +507,10 @@ bool ColladaConverter::convert()
 
 						} //for  each  instance_rigid_body
 
-						
+
 					} //for each physics model
 
-					
+
 					//handle constraints
 					for (unsigned int ma=0;ma<physicsSceneRef->getInstance_physics_model_array().getCount();ma++)
 					{
@@ -518,7 +518,7 @@ bool ColladaConverter::convert()
 
 						daeElementRef ref = instance_physicsModelRef->getUrl().getElement();
 
-						domPhysics_modelRef model = *(domPhysics_modelRef*)&ref; 
+						domPhysics_modelRef model = *(domPhysics_modelRef*)&ref;
 
 						{
 							ConstraintInput cInput;
@@ -533,16 +533,16 @@ bool ColladaConverter::convert()
 							domInstance_physics_modelRef	instancePhysicsModelRef = model->getInstance_physics_model_array()[p];
 
 							daeElementRef ref = instancePhysicsModelRef->getUrl().getElement();
-	
-							domPhysics_modelRef model = *(domPhysics_modelRef*)&ref; 
-							
+
+							domPhysics_modelRef model = *(domPhysics_modelRef*)&ref;
+
 							ConstraintInput cInput;
 							cInput.m_instance_physicsModelRef = instancePhysicsModelRef;
 							cInput.m_model = model;
 							prepareConstraints(cInput);
 						}
 
-											
+
 					} //2nd time, for each physics model
 
 				}
@@ -570,10 +570,10 @@ void	ColladaConverter::prepareConstraints(ConstraintInput& input)
 			for (size_t r=0;r<numConstraints;r++)
 			{
 				domRigid_constraintRef rigidConstraintRef = model->getRigid_constraint_array()[r];
-				
+
 				if (rigidConstraintRef->getSid() && !strcmp(rigidConstraintRef->getSid(),constraintName))
 				{
-					
+
 					//two bodies
 					const domRigid_constraint::domRef_attachmentRef attachRefBody = rigidConstraintRef->getRef_attachment();
 					const domRigid_constraint::domAttachmentRef attachBody1 = rigidConstraintRef->getAttachment();
@@ -581,7 +581,7 @@ void	ColladaConverter::prepareConstraints(ConstraintInput& input)
 					daeString orgUri0 = attachRefBody ? attachRefBody->getRigid_body().getOriginalURI() : "";
 					daeString orgUri1 = attachBody1 ? attachBody1->getRigid_body().getOriginalURI() : "";
 					btRigidBody* body0=0,*body1=0;
-					
+
 					for (int i=0;i<m_numObjects;i++)
 					{
 						if (m_rigidBodies[i]->getUserPointer())
@@ -600,7 +600,7 @@ void	ColladaConverter::prepareConstraints(ConstraintInput& input)
 
 					const domRigid_constraint::domAttachmentRef attachOtherBody = rigidConstraintRef->getAttachment();
 					const domRigid_constraint::domTechnique_commonRef commonRef = rigidConstraintRef->getTechnique_common();
-					
+
 					domFloat3 flMin, flMax, coneMinLimit, coneMaxLimit;
 					btVector3 minLinearLimit, maxLinearLimit, angularMin, angularMax;
 					if (commonRef)
@@ -625,13 +625,13 @@ void	ColladaConverter::prepareConstraints(ConstraintInput& input)
 					}
 
 					{
-						
+
 						btTransform attachFrameRef0;
 						attachFrameRef0.setIdentity();
 
 						if (attachRefBody)
 						{
-							attachFrameRef0 = 
+							attachFrameRef0 =
 								GetbtTransformFromCOLLADA_DOM
 								(
 								emptyMatrixArray,
@@ -666,8 +666,8 @@ void	ColladaConverter::prepareConstraints(ConstraintInput& input)
 
 
 
-						
-						//free means upper < lower, 
+
+						//free means upper < lower,
 						//locked means upper == lower
 						//limited means upper > lower
 						//limitIndex: first 3 are linear, next 3 are angular
@@ -818,7 +818,7 @@ bool ColladaConverter::saveAs(const char* filename)
 					m_colladadomNodes[i]->getTranslate_array().get(0)->setValue(newPos);
 
 				}
-				
+
 
 				if (!m_colladadomNodes[i]->getRotate_array().getCount())
 				{
@@ -865,8 +865,8 @@ bool ColladaConverter::saveAs(const char* filename)
 			if (name[0] == '/')
 			{
 				name = &saveName[1];
-			} 
-			
+			}
+
 			if (m_dom->getAsset()->getContributor_array().getCount())
 			{
 				if (!m_dom->getAsset()->getContributor_array().get(0)->getAuthor())
@@ -902,7 +902,7 @@ bool ColladaConverter::saveAs(const char* filename)
 
 			m_collada->saveAs(name);
 			return true;
-			
+
 		}
 		return false;
 }
@@ -954,15 +954,15 @@ char* fixFileName(const char* lpCmdLine)
 		in++;
 		out++;
 	}
-	
-	cleaned_filename[i] = '\0'; 
+
+	cleaned_filename[i] = '\0';
 	return cleaned_filename;
 }
 
 
 void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBodyOutput& rbOutput)
 {
-	
+
 	const domRigid_body::domTechnique_commonRef techniqueRef = rbInput.m_rigidBodyRef2->getTechnique_common();
 	if (techniqueRef)
 	{
@@ -1077,7 +1077,7 @@ void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBod
 					{
 
 						btTriangleMesh* trimesh = new btTriangleMesh();
-						
+
 						for (unsigned int tg = 0;tg<meshRef->getTriangles_array().getCount();tg++)
 						{
 
@@ -1088,10 +1088,10 @@ void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBod
 							meshPart.m_triangleIndexStride=0;
 
 
-							
+
 							int vertexoffset = -1;
 							domInputLocalOffsetRef indexOffsetRef;
-							
+
 
 							for (unsigned int w=0;w<triRef->getInput_array().getCount();w++)
 							{
@@ -1108,7 +1108,7 @@ void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBod
 								}
 							}
 							meshPart.m_triangleIndexStride++;
-							domListOfUInts indexArray =triRef->getP()->getValue(); 
+							domListOfUInts indexArray =triRef->getP()->getValue();
 
 							//int*		m_triangleIndexBase;
 
@@ -1170,7 +1170,7 @@ void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBod
 
 							}
 
-						} 
+						}
 					} else
 						{
 
@@ -1217,7 +1217,7 @@ void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBod
 							}
 
 					}
-						
+
 
 				}
 
@@ -1265,7 +1265,7 @@ void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBod
 
 							for ( unsigned int  i = 0; i < libgeom->getGeometry_array().getCount(); i++)
 							{
-								//ReadGeometry(  ); 
+								//ReadGeometry(  );
 								domGeometryRef lib = libgeom->getGeometry_array()[i];
 								if (!strcmp(lib->getId(),urlref2))
 								{
@@ -1373,13 +1373,13 @@ void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBod
 
 			bool hasShapeLocalTransform = ((shapeRef->getRotate_array().getCount() > 0) ||
 				(shapeRef->getTranslate_array().getCount() > 0));
-			
+
 			if (rbOutput.m_colShape)
 			{
 				if ((techniqueRef->getShape_array().getCount()>1) ||
 					(hasShapeLocalTransform))
 				{
-					
+
 					if (!rbOutput.m_compoundShape)
 					{
 						rbOutput.m_compoundShape = new btCompoundShape();
@@ -1428,8 +1428,8 @@ void	ColladaConverter::ConvertRigidBodyRef( btRigidBodyInput& rbInput,btRigidBod
 
 /******************/
 
-btRigidBody*  MyColladaConverter::createRigidBody(const char * nodeid, bool isDynamic, 
-		float mass, 
+btRigidBody*  MyColladaConverter::createRigidBody(const char * nodeid, bool isDynamic,
+		float mass,
 		const btTransform& startTransform,
 		btCollisionShape* shape)
 {
@@ -1457,14 +1457,16 @@ btRigidBody*  MyColladaConverter::createRigidBody(const char * nodeid, bool isDy
 	btRigidBody* body = new btRigidBody(mass,myMotionState,shape,localInertia);
 
 	m_dynamicsWorld->addRigidBody(body);
-	
+
 	CrtScene * scene = _CrtRender.GetScene();
 	if (scene) {
 		CrtNode * crtnode = scene->GetNode(nodeid, NULL);
-		if (crtnode) 
+		if (crtnode)
+		{
 			m_RigidBody_map[body] = crtnode;
-		crtnode->SetUpdateLocalMatrix(CrtFalse);
-		crtnode->SetUpdateLocalToWorldMatrix(CrtFalse);
+			crtnode->SetUpdateLocalMatrix(CrtFalse);
+			crtnode->SetUpdateLocalToWorldMatrix(CrtFalse);
+		}
 	}
 	return body;//		btRigidBody* body = m_demoApp->localCreateRigidBody(mass, startTransform,shape);
 }
@@ -1475,7 +1477,7 @@ MyColladaConverter::MyColladaConverter()
 	m_cameraUp = btVector3(0,0,1);
 	m_forwardAxis = 1;
 
-  #ifdef SPU_BULLET
+	#ifdef SPU_BULLET
 	// ----------------------------------------------------------
 	// SPURS instance
 	CellSpursAttribute	attributeSpurs;
@@ -1507,15 +1509,16 @@ MyColladaConverter::MyColladaConverter()
 		return ;
 	}
 
-  	int numSpuTasks = NUM_MAX_SPU;
+		int numSpuTasks = NUM_MAX_SPU;
 
-    ///collision configuration contains default setup for memory, collision setup    m_collisionConfiguration = new btDefaultCollisionConfiguration();
+    ///collision configuration contains default setup for memory, collision setup
+    m_collisionConfiguration = new btDefaultCollisionConfiguration();
 
-	m_collionThreadSupport =  new BulletCollisionSpursSupport(&mSpursInstance,numSpuTasks,numSpuTasks);
+  m_collionThreadSupport =  new BulletCollisionSpursSupport(&mSpursInstance,numSpuTasks,numSpuTasks);
     m_dispatcher = new SpuGatheringCollisionDispatcher(m_collionThreadSupport,numSpuTasks,m_collisionConfiguration);
 
 #else
-    m_collisionConfiguration = new btDefaultCollisionConfiguration();
+		m_collisionConfiguration = new btDefaultCollisionConfiguration();
 	m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
 
 #endif
@@ -1570,9 +1573,9 @@ class btRigidBody* bodyRef,class btRigidBody* bodyOther,
 		genericConstraint->setAngularUpperLimit(angularMaxLimits);
 
 		m_dynamicsWorld->addConstraint( genericConstraint );
-		
+
 		return genericConstraint;
-	} 
+	}
 	return 0;
 }
 
@@ -1583,7 +1586,7 @@ void MyColladaConverter::Render(float delta_time)
 //		m_dynamicsWorld->updateAabbs();
 
 	btScalar m[16];
-	
+
 	if (m_dynamicsWorld)
 	{
 //		float fixedTimeStep = 1.f/60.f;
@@ -1621,7 +1624,7 @@ void MyColladaConverter::Render(float delta_time)
 				printf("[ %f, %f, %f, %f]\n", m[8], m[9], m[10], m[11]);
 				printf("[ %f, %f, %f, %f]\n", m[12], m[13], m[14], m[15]);
 			}
-		
+
 		}
 	}
 }
@@ -1631,7 +1634,7 @@ void	MyColladaConverter::setGravity(const CrtVec3f & vec)
 {
 	m_dynamicsWorld->setGravity(btVector3(vec.x, vec.y, vec.z));
 }
-void	MyColladaConverter::setCameraInfo(const btVector3& camUp,int forwardAxis) 
+void	MyColladaConverter::setCameraInfo(const btVector3& camUp,int forwardAxis)
 {
 	(void) camUp;
 	(void) forwardAxis;
