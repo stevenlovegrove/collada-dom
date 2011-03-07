@@ -194,7 +194,13 @@ public:
 	void	Update( CrtFloat time);
 	void	UpdateOrient( CrtFloat time); 
 	void	BuildLWMatrix( CrtFloat time );
-	void	Render(); 
+
+	void    SetupLocalFrame();
+	void    RestoreWorldFrame();
+
+	void	RenderThisLocal();
+	void	RenderThis();
+	void	Render();
 	
 	//---------------------- End External Interfaces ---------------------------------//	
 

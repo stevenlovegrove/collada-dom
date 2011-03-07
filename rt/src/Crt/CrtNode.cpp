@@ -174,18 +174,8 @@ void CrtNode::UpdateOrient( CrtFloat time )
 	return; 
 }
 
-void 	CrtNode::Render()
+void 	CrtNode::RenderThisLocal()
 {
-	//CrtPrint(" Rendering Node %s Type %d \n", Name, (CrtInt32)Type ); 
-	if ( _CrtRender.GetShowHiearchy() )
-		DrawLineToChildren();
-	
-	// to concate to the camera which should be already set 	
-	_CrtRender.PushMatrix();
-	//CrtMatrixLoadIdentity(LocalToWorldMatrix);
-	_CrtRender.MultMatrix(LocalToWorldMatrix); 
-	_CrtRender.SetCurrentLMMat( LocalToWorldMatrix ); 
-			
 	for(CrtUInt i=0; i<InstanceGeometries.size(); i++)
 	{
 		CrtGeometry * geometry = InstanceGeometries[i]->AbstractGeometry;
@@ -200,8 +190,38 @@ void 	CrtNode::Render()
 		controller->Draw(this, InstanceControllers[i]);
 //		gNumTris += geometry->GetTotalNumTris();
 	}
-	//CrtPrint(" %s Rendering Children \n", Name ); 
-	_CrtRender.PopMatrix(); 
+}
+
+void    CrtNode::SetupLocalFrame()
+{
+	// to concate to the camera which should be already set
+	_CrtRender.PushMatrix();
+	//CrtMatrixLoadIdentity(LocalToWorldMatrix);
+	_CrtRender.MultMatrix(LocalToWorldMatrix);
+	_CrtRender.SetCurrentLMMat( LocalToWorldMatrix );
+}
+
+void  CrtNode::RestoreWorldFrame()
+{
+	_CrtRender.PopMatrix();
+}
+
+void 	CrtNode::RenderThis()
+{
+	SetupLocalFrame();
+	RenderThisLocal();
+	RestoreWorldFrame();
+}
+
+void 	CrtNode::Render()
+{
+	//CrtPrint(" Rendering Node %s Type %d \n", Name, (CrtInt32)Type ); 
+	if ( _CrtRender.GetShowHiearchy() )
+		DrawLineToChildren();
+
+	RenderThis();
+
+	//CrtPrint(" %s Rendering Children \n", Name );
 
     // Render All Children 
 	if (Children)
