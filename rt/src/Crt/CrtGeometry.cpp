@@ -197,9 +197,9 @@ void 	CrtGeometry::SetRender()
 	_CrtRender.range_data.SetRange(&Points, vertexcount);
 	if (_CrtRender.UsingVBOs())
 	{
-		glEnableClientState(GL_VERTEX_ARRAY); 
+		glEnableClientState(GL_VERTEX_ARRAY);
 		_CrtRender.BindVBO(GL_ARRAY_BUFFER, VBOIDs[eGeoPoints]);
-		glVertexPointer ( 3, GL_FLOAT, 0, NULL);				
+		glVertexPointer ( 3, GL_FLOAT, 0, NULL);
 
 		glEnableClientState(GL_NORMAL_ARRAY);
 		_CrtRender.BindVBO(GL_ARRAY_BUFFER, VBOIDs[eGeoNormals]);
@@ -207,23 +207,46 @@ void 	CrtGeometry::SetRender()
 
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 		_CrtRender.BindVBO(GL_ARRAY_BUFFER, VBOIDs[eGeoTexCoord0]);
-		glTexCoordPointer( 2, GL_FLOAT, 0, NULL);	
+		glTexCoordPointer( 2, GL_FLOAT, 0, NULL);
 
 		_CrtRender.CopyVBOData(GL_ARRAY_BUFFER, VBOIDs[eGeoPoints],Points, vertexcount*3*sizeof(CrtFloat));
 		_CrtRender.CopyVBOData(GL_ARRAY_BUFFER, VBOIDs[eGeoNormals],Normals, vertexcount*3*sizeof(CrtFloat));
 		return;
 	}
 
-	glEnableClientState(GL_VERTEX_ARRAY); 
-	glVertexPointer ( 3, GL_FLOAT, 0, Points );				
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer ( 3, GL_FLOAT, 0, Points );
 	if (Normals) {
 		glEnableClientState(GL_NORMAL_ARRAY);
 		glNormalPointer( GL_FLOAT, 0, Normals );
 	}
 	if (TexCoords[0]) {
 		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-		glTexCoordPointer( 2, GL_FLOAT, 0, TexCoords[0] );	
+		glTexCoordPointer( 2, GL_FLOAT, 0, TexCoords[0] );
 	}
+}
+
+void CrtGeometry::UnsetRender(){
+
+
+		if (_CrtRender.UsingVBOs())
+		{
+			_CrtRender.BindVBO(GL_ARRAY_BUFFER, 0);
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+			glDisableClientState(GL_VERTEX_ARRAY);
+			return;
+		}
+
+		glDisableClientState(GL_VERTEX_ARRAY);
+		if (Normals) {
+			glDisableClientState(GL_NORMAL_ARRAY);
+		}
+
+		if (TexCoords[0]) {
+			glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+		}
+
 }
 
 CrtLines::CrtLines()

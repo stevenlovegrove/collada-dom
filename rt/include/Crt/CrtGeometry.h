@@ -462,8 +462,11 @@ protected:
 		{
 			Groups[i]->Draw(parentNode, instance); 
 		}			
+		UnsetRender();
+
 	};
-	void 	SetRender();
+	void SetRender();
+	void UnsetRender();
 	
 	CrtVoid	DrawSkinned(CrtNode *parentNode, CrtInstance * instance);
 

@@ -22,6 +22,7 @@ ifneq ($(findstring $(os),linux mac),)
     ccFlags += -fPIC -DLINUX
     ccFlags += -DCFX_PLATFORM_INCLUDE=\"cfxLinux.h\"
     ccFlags += -DCRT_PLATFORM_INCLUDE=\"CrtLinux.h\"
+    ccFlags += -DBT_USE_DOUBLE_PRECISION
     src += src/Crt/CrtLinux.cpp
 
 else
